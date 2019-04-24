@@ -1,0 +1,19 @@
+{
+  "name": "swoole and zookeeper",
+  "description": "swoole and zookeeper",
+  "license": "MIT",
+  "type": "project",
+  "require": {
+    "php": ">=7.0.0",
+    "monolog/monolog": "^1.24"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    },
+    "files": [
+      "app/Helper/Helpers.php",
+      "app/Helper/Constants.php"
+    ]
+  }
+}
