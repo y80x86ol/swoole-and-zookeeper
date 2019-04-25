@@ -103,13 +103,13 @@ class ZooServer extends CoreService
     {
         $isExist = $this->zookeeper->exists($this->cluster->getClusterPath());
         if ($isExist) {
-            echo "已经存在集群了:" . PHP_EOL;
+            Log::info("已经存在集群了");
         } else {
             $realPath = $this->zookeeper->create($this->cluster->getClusterPath(), "cluster", $this->cluster->getAcl());
             if ($realPath) {
-                echo "集群创建成功:" . $realPath . PHP_EOL;
+                Log::info("集群创建成功:" . $realPath);
             } else {
-                echo '【错误】集群创建失败' . PHP_EOL;
+                Log::info('【错误】集群创建失败');
             }
         }
     }
@@ -121,13 +121,13 @@ class ZooServer extends CoreService
     {
         $isExist = $this->zookeeper->exists($this->cluster->getClusterNodesPath());
         if ($isExist) {
-            echo "已经存在集群节点了:" . PHP_EOL;
+            Log::info("已经存在集群节点了:");
         } else {
-            $realPath = $this->zookeeper->create($this->cluster->getClusterNodesPath(), "cluster", $this->cluster->getAcl());
+            $realPath = $this->zookeeper->create($this->cluster->getClusterNodesPath(), "nodes", $this->cluster->getAcl());
             if ($realPath) {
-                echo "集群节点创建成功:" . $realPath . PHP_EOL;
+                Log::info("集群节点创建成功:" . $realPath);
             } else {
-                echo '【错误】集群节点创建失败' . PHP_EOL;
+                Log::info('【错误】集群节点创建失败');
             }
         }
     }
@@ -139,14 +139,14 @@ class ZooServer extends CoreService
     {
         $isExist = $this->zookeeper->exists($this->cluster->getClusterTaskerPath());
         if ($isExist) {
-            echo "已经存在tasker了:" . PHP_EOL;
+            Log::info("已经存在tasker了:");
         } else {
             $value = config('tasker.list');
             $realPath = $this->zookeeper->create($this->cluster->getClusterTaskerPath(), json_encode($value), $this->cluster->getAcl());
             if ($realPath) {
-                echo "tasker创建成功:" . $realPath . PHP_EOL;
+                Log::info("tasker创建成功:" . $realPath);
             } else {
-                echo '【错误】tasker创建失败' . PHP_EOL;
+                Log::info('【错误】tasker创建失败');
             }
         }
     }
@@ -231,7 +231,7 @@ class ZooServer extends CoreService
      */
     public function watchNode($watcher)
     {
-        Log::info("监听到了节点变化，变化如下：");
+        Log::info(PHP_EOL . "监听到了节点变化，变化如下：");
         Log::info($watcher);
 
         $watching = $this->getClusterNodesChildren();
@@ -278,7 +278,7 @@ class ZooServer extends CoreService
     }
 
     /**
-     * 开始运行zookeeper
+     * 开始运行zookeeper集群工作
      */
     public function run()
     {

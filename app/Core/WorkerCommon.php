@@ -106,7 +106,7 @@ class WorkerCommon extends CoreService
 
                 for ($i = 0; $i < $needClose; $i++) {
                     $process = array_pop($taskerProcessList);
-                    posix_kill($process->pid, SIGINT);
+                    posix_kill($process->pid, SIGQUIT);
                 }
 
                 $processList[$task['name']] = $taskerProcessList;

@@ -14,13 +14,14 @@ class app
     {
         echo "======== app run ========" . PHP_EOL;
     }
+
     /**
      * 执行应用
      */
     public function run()
     {
-        $swooleServer = new SwooleServer();
-
+//        $swooleServer = new SwooleServer();
+        $swooleServer = new \App\Core\SwooleProcessPoolServer();
         $swooleServer->run();
     }
 
