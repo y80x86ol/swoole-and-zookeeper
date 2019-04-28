@@ -72,7 +72,7 @@ class SwooleProcessPoolServer
     /**
      * 创建SIGCHLD监听
      *
-     * 用来释放子进程，必然子进程出现僵尸进程
+     * 用来释放子进程，不然子进程出现僵尸进程
      */
     private function createSignalSIGCHLD()
     {
