@@ -51,28 +51,23 @@ class HttpServer extends CoreService
         return $processHttp;
     }
 
+    /**
+     * 创建http服务
+     */
     private function createHttpServer()
     {
-        try {
-            $http = new \Swoole\Http\Server($this->config['ip'], $this->config['port']);
+        $http = new \Swoole\Http\Server($this->config['ip'], $this->config['port']);
 
-            $http->on('request', function ($request, $response) {
-                var_dump($request->get, $request->post);
+        $http->on('request', function ($request, $response) {
+            var_dump($request->get, $request->post);
 
-                $httpService = new HttpService();
-                $responseContent = $httpService->run($request, $response);
+            $httpService = new HttpService();
+            $responseContent = $httpService->run($request, $response);
 
-                $response->header($responseContent['header']);
-                $response->end($responseContent['body']);
-            });
+            $response->header($responseContent['header']);
+            $response->end($responseContent['body']);
+        });
 
-            $http->start();
-            Log::info("【http】222，尝试下一个端口" . ($this->config['port'] + 1));
-        } catch (\Exception $exception) {
-            Log::info("【http】启动失败，尝试下一个端口" . ($this->config['port'] + 1));
-            $this->config['port']++;
-            return $this->createHttpServer();
-        }
-        return '';
+        $http->start();
     }
 }
