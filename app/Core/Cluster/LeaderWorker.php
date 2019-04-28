@@ -6,7 +6,7 @@
  * Time: 17:50
  */
 
-namespace App\Core;
+namespace App\Core\Cluster;
 
 /**
  * leader执行任务

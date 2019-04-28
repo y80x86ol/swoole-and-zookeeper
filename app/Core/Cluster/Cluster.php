@@ -6,7 +6,9 @@
  * Time: 16:48
  */
 
-namespace App\Core;
+namespace App\Core\Cluster;
+
+use App\Core\CoreService;
 
 /**
  * zookeeper集群

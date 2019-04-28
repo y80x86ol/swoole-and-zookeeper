@@ -6,11 +6,12 @@
  * Time: 21:04
  */
 
-namespace App\Core;
+namespace App\Core\Cluster;
 
 
 use App\Common\Log;
 use App\Common\Storage;
+use App\Core\CoreService;
 
 /**
  * 领导者和跟随者相同处理业务

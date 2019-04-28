@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Cluster;
 
 use App\Common\Log;
+use App\Core\CoreService;
 use App\Services\TaskWorkService;
 
 /**

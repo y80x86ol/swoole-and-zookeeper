@@ -11,10 +11,9 @@ namespace App\Core\Cluster;
 
 use App\Common\Log;
 use App\Core\CoreService;
-use App\Core\ZookeeperServer;
 
 /**
- * zoo模块
+ * cluster模块
  * @package App\Core
  */
 class ZooServer extends CoreService

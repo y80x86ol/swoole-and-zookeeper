@@ -40,19 +40,14 @@ class SwooleProcessPoolServer
 
             Log::info("======== 进程池启动成功 ========");
 
-            \Swoole\Process::signal(SIGINT, function ($signo) use ($currentProcess) {
-                Log::info("======== [SIGINT]master get SIGINT ========");
 
-                //当前进程正常退出
-                $currentProcess->exit(0);
-            });
+            $this->createSignalSIGCHLD();
 
-            \Swoole\Process::signal(SIGCHLD, function ($sig) {
-                //必须为false，非阻塞模式
-                while ($ret = \Swoole\Process::wait(true)) {
-                    Log::info("======== [SIGCHLD]master get SIGINT ========", $ret);
-                }
-            });
+            $this->createSignalSIGINT($currentProcess);
+
+            $this->createSignalSIGTEM($currentProcess);
+
+            $this->createSignalSIGKILL($currentProcess);
 
             // 启动http模块
             $httpServer = new HttpServer();
@@ -69,9 +64,70 @@ class SwooleProcessPoolServer
 
         $pool->on("WorkerStop", function ($pool, $workerId) {
             Log::info("======== 有进程停止了工作 ========" . $workerId);
-
         });
 
         $pool->start();
+    }
+
+    /**
+     * 创建SIGCHLD监听
+     *
+     * 用来释放子进程，必然子进程出现僵尸进程
+     */
+    private function createSignalSIGCHLD()
+    {
+        \Swoole\Process::signal(SIGCHLD, function ($sig) {
+            //必须为false，非阻塞模式
+            while ($ret = \Swoole\Process::wait(false)) {
+                Log::info("======== [SIGCHLD] master get SIGCHLD ========", $ret);
+            }
+        });
+    }
+
+    /**
+     * 创建SIGINT监听
+     *
+     * 2 SIGINT 进程终端，CTRL+C
+     *
+     * @param $currentProcess
+     */
+    private function createSignalSIGINT($currentProcess)
+    {
+        \Swoole\Process::signal(SIGINT, function ($signo) use ($currentProcess) {
+            Log::info("======== [SIGINT] master get SIGINT ========", [$signo]);
+
+            foreach ($this->process as $process) {
+                //向子进程发送请求退出信号
+                \Swoole\Process::kill($process->pid, SIGTERM);
+                Log::info("======== [SIGINT] kill children ========", [$process->pid]);
+            }
+
+            //当前进程正常退出,不进行退出则会造成僵尸进程存在
+            $currentProcess->exit(0);
+        });
+    }
+
+    /**
+     * 创建SIGTEM监听
+     *
+     * 15 SIGTEM 请求中断
+     *
+     * @param $currentProcess
+     */
+    private function createSignalSIGTEM($currentProcess)
+    {
+        // todo:处理sigtem信号
+    }
+
+    /**
+     * 创建SIGKILL监听
+     *
+     * 9 SIGKILL 强制终端
+     *
+     * @param $currentProcess
+     */
+    private function createSignalSIGKILL($currentProcess)
+    {
+        // todo:处理sigkill信号
     }
 }

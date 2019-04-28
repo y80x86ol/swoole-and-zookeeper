@@ -103,6 +103,10 @@ class Log
     public static function __callStatic($method, $arguments)
     {
         print_r($arguments[0] . PHP_EOL);
+        if (isset($arguments[1])) {
+            print_r($arguments[1]);
+            print_r(PHP_EOL);
+        }
 
         self::getInstance();
         return self::$log->$method($arguments[0] ?? '', $arguments[1] ?? [], $arguments[2] ?? []);

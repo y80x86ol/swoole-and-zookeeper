@@ -18,6 +18,18 @@ use App\Core\CoreService;
 class HttpServer extends CoreService
 {
     /**
+     * 配置
+     *
+     * @var array
+     */
+    private $config = [];
+
+    public function __construct()
+    {
+        $this->config = config('swoole');
+    }
+
+    /**
      * 开启进程
      *
      * @return \Swoole\Process
@@ -26,8 +38,23 @@ class HttpServer extends CoreService
     {
         $processHttp = new \Swoole\Process(function ($process) {
             Log::info("【http】这是一个http模块，用于接受http请求");
+            Log::info("【http】启动成功 " . $this->config['ip'] . ":" . $this->config['port']);
 
-            $http = new \Swoole\Http\Server("0.0.0.0", 9501);
+            $this->createHttpServer();
+
+        }, true);
+
+        $processHttp->start();
+
+        echo $processHttp->read(); // 输出进程基本信息
+
+        return $processHttp;
+    }
+
+    private function createHttpServer()
+    {
+        try {
+            $http = new \Swoole\Http\Server($this->config['ip'], $this->config['port']);
 
             $http->on('request', function ($request, $response) {
                 var_dump($request->get, $request->post);
@@ -37,24 +64,15 @@ class HttpServer extends CoreService
 
                 $response->header($responseContent['header']);
                 $response->end($responseContent['body']);
-
             });
 
-//            \Swoole\Process::signal(SIGTERM, function ($signo) {
-//                Log::info("======== [SIGTERM]http get SIGTERM ========");
-//            });
-//
-//            \Swoole\Process::signal(SIGINT, function ($signo) {
-//                Log::info("======== [SIGINT]http get SIGINT ========");
-//            });
-
             $http->start();
-        }, true);
-
-        $processHttp->start();
-
-        echo $processHttp->read(); // 输出进程基本信息
-
-        return $processHttp;
+            Log::info("【http】222，尝试下一个端口" . ($this->config['port'] + 1));
+        } catch (\Exception $exception) {
+            Log::info("【http】启动失败，尝试下一个端口" . ($this->config['port'] + 1));
+            $this->config['port']++;
+            return $this->createHttpServer();
+        }
+        return '';
     }
 }

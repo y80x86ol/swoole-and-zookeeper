@@ -28,19 +28,15 @@ class PingServer extends CoreService
         $processPing = new \Swoole\Process(function ($process) {
             Log::info("【ping】这是一个ping模块，用于节点发现");
 
-//            \Swoole\Process::signal(SIGTERM, function ($signo) {
-//                $this->running = false;
-//                Log::info("======== [SIGTERM]ping get SIGTERM ========");
-//            });
+            \Swoole\Process::signal(SIGTERM, function ($signo) use ($process) {
+                $process->close(0);
+                $this->running = false;
+                Log::info("======== [SIGTERM]ping get SIGTERM ========");
+            });
 //
-//            \Swoole\Process::signal(SIGINT, function ($signo) use ($process) {
-////                $process->exit(0);
-////                $this->running = false;
-//                Log::info("======== [SIGINT]ping get SIGINT ========");
-//            });
 //
 //            \Swoole\Process::signal(SIGKILL, function ($signo) use ($process) {
-////                $process->close();
+////                $process->exit();
 ////                $this->running = false;
 //                Log::info("======== [SIGTERM]ping get SIGTERM ========");
 //            });
