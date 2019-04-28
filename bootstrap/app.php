@@ -1,6 +1,6 @@
 <?php
 
-use App\Core\SwooleServer;
+use App\Core\SwooleProcessPoolServer;
 
 /**
  * 应用入口
@@ -20,8 +20,7 @@ class app
      */
     public function run()
     {
-//        $swooleServer = new SwooleServer();
-        $swooleServer = new \App\Core\SwooleProcessPoolServer();
+        $swooleServer = new SwooleProcessPoolServer();
         $swooleServer->run();
     }
 

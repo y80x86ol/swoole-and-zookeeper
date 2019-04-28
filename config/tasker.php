@@ -7,7 +7,7 @@ return [
     'list' => [
         [
             'name' => 'chanela',     //任务名称
-            'num' => 2               //任务数量
+            'num' => 1               //任务数量
         ]
     ],
 ];

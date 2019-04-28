@@ -10,7 +10,7 @@ use App\Common\Storage;
  *
  * @package App\Services
  */
-class ZooServer extends CoreService
+class ZookeeperServer extends CoreService
 {
     /**
      * zookeeper对象

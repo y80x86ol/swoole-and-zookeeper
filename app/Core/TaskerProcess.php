@@ -43,6 +43,10 @@ class TaskerProcess extends CoreService
         $process = new \Swoole\Process(function ($process) {
             Log::info("进程创建成功，开始执行任务");
 
+            $process->signal(SIGTERM, function ($signo) {
+                Log::info("======== [SIGTERM]worker get shutdown ========");
+            });
+
             $taskWorkerService = new TaskWorkService($process, $this->node, $this->taskName);
             $taskWorkerService->run();
         }, true);
