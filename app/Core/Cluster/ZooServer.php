@@ -30,6 +30,7 @@ class ZooServer extends CoreService
             $zooService->initData();
             $zooService->run();
         }, true);
+        //设置为false，则为同步输出消息到控制台，并且形成阻塞，如果为true，则不输出，并且形成异步不阻塞
 
         $processPing->start();
 
