@@ -170,15 +170,11 @@ class ZookeeperServer extends CoreService
                 //新的冲突节点
                 Log::info("新的冲突节点");
 
-//                Log::info("当前进程：" . posix_getpid());
-//                posix_kill(posix_getppid(), SIGTERM);
-//                sleep(10);
-
-                //创建临时节点，当client退出的时候自动删除节点
-                $this->setNode();
+                $this->setRandNode();
 
                 Log::info("开始随机生成节点：" . $this->node);
 
+                //创建临时节点，当client退出的时候自动删除节点
                 $this->createNode();
             }
         } else {
@@ -328,13 +324,13 @@ class ZookeeperServer extends CoreService
     }
 
     /**
-     * 设置节点
+     * 设置随机节点
      *
      * 用于当节点冲突的时候，随机生成节点名称
      */
-    private function setNode()
+    private function setRandNode()
     {
-        $node = str_rand(8);
+        $node = 'node' . rand(100, 1000);
         $this->node = $node;
     }
 }

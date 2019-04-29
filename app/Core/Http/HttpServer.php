@@ -40,7 +40,12 @@ class HttpServer extends CoreService
             Log::info("【http】这是一个http模块，用于接受http请求");
             Log::info("【http】启动成功 " . $this->config['ip'] . ":" . $this->config['port']);
 
-            $this->createHttpServer();
+            try {
+                $this->createHttpServer();
+            } catch (\Exception $exception) {
+                Log::info("【http】当前进程启动失败，告诉父进程中止应用启动");
+                Log::info($exception->getMessage());
+            }
 
         }, true);
 
@@ -69,5 +74,7 @@ class HttpServer extends CoreService
         });
 
         $http->start();
+
+        return $http;
     }
 }

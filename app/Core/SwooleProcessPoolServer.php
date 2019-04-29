@@ -41,7 +41,7 @@ class SwooleProcessPoolServer
             Log::info("======== 进程池启动成功 ========");
 
 
-            $this->createSignalSIGCHLD();
+            $this->createSignalSIGCHLD($currentProcess);
 
             $this->createSignalSIGINT($currentProcess);
 
@@ -74,9 +74,9 @@ class SwooleProcessPoolServer
      *
      * 用来释放子进程，不然子进程出现僵尸进程
      */
-    private function createSignalSIGCHLD()
+    private function createSignalSIGCHLD($currentProcess)
     {
-        \Swoole\Process::signal(SIGCHLD, function ($sig) {
+        \Swoole\Process::signal(SIGCHLD, function ($sig) use ($currentProcess) {
             //必须为false，非阻塞模式
             while ($ret = \Swoole\Process::wait(false)) {
                 Log::info("======== [SIGCHLD] master get SIGCHLD ========", $ret);
@@ -129,5 +129,17 @@ class SwooleProcessPoolServer
     private function createSignalSIGKILL($currentProcess)
     {
         // todo:处理sigkill信号
+//        \Swoole\Process::signal(SIGKILL, function ($signo) use ($currentProcess) {
+//            Log::info("======== [SIGKILL] master get SIGKILL ========", [$signo]);
+//
+//            foreach ($this->process as $process) {
+//                //向子进程发送请求退出信号
+//                \Swoole\Process::kill($process->pid, SIGTERM);
+//                Log::info("======== [SIGINT] kill children ========", [$process->pid]);
+//            }
+//
+//            //当前进程正常退出,不进行退出则会造成僵尸进程存在
+//            $currentProcess->exit(0);
+//        });
     }
 }
